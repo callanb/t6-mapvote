@@ -1,8 +1,8 @@
 #include maps\mp\gametypes\_hud_util;
 #include common_scripts\utility;
-//mp_la,mp_dockside,mp_carrier,mp_drone,mp_express,mp_hijacked,mp_meltdown,mp_overflow,mp_nightclub,mp_raid,mp_slums,mp_village,mp_turbine,mp_socotra,mp_nuketown_2020,mp_downhill,mp_mirage,mp_hydro,mp_skate,mp_concert,mp_magma,mp_vertigo,mp_studio,mp_uplink,mp_bridge,mp_castaway,mp_paintball,mp_dig,mp_frostbite,mp_pod,mp_takeoff
+
 init(){
-    maps = strtok("mp_raid,mp_slums,mp_village", ",");
+    maps = strtok("//mp_la,mp_dockside,mp_carrier,mp_drone,mp_express,mp_hijacked,mp_meltdown,mp_overflow,mp_nightclub,mp_raid,mp_slums,mp_village,mp_turbine,mp_socotra,mp_nuketown_2020,mp_downhill,mp_mirage,mp_hydro,mp_skate,mp_concert,mp_magma,mp_vertigo,mp_studio,mp_uplink,mp_bridge,mp_castaway,mp_paintball,mp_dig,mp_frostbite,mp_pod,mp_takeoff", ",");
     level.mvprev = getdvar("mapname");
     arrayremovevalue(maps, level.mvprev);
     level.mvnext = maps[randomint(maps.size)];
@@ -123,7 +123,7 @@ shader(shader, align, relative, x, y, width, height, color, alpha, sort){
     element;
     element = isplayer(self) ? newclienthudelem(self) : newhudelem(self);
     element.elemtype = "bar";
-	element.hidewheninmenu = true;
+    element.hidewheninmenu = true;
     element.xoffset = 0;
     element.yoffset = 0;
     element.children = [];
