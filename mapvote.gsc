@@ -16,6 +16,7 @@ init(){
 }
 
 mapvote(){
+    if(!waslastround()) return;
     display();
     foreach(player in level.players) player thread input();
     timer();
