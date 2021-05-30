@@ -1,4 +1,4 @@
 # t6-mapvote
 
-Post-match mapvote for dedicated servers on T6.
+T6 Plutonium mapvote for dedicated servers.
 [Preview](preview.png)
