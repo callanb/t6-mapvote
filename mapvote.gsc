@@ -1,5 +1,6 @@
-#include maps\mp\gametypes\_hud_util;
-#include common_scripts\utility;
+#include maps/mp/gametypes/_hud_util;
+#include common_scripts/utility;
+#include maps/mp/_utility;
 
 init(){
     maps = strtok("mp_la,mp_dockside,mp_carrier,mp_drone,mp_express,mp_hijacked,mp_meltdown,mp_overflow,mp_nightclub,mp_raid,mp_slums,mp_village,mp_turbine,mp_socotra,mp_nuketown_2020,mp_downhill,mp_mirage,mp_hydro,mp_skate,mp_concert,mp_magma,mp_vertigo,mp_studio,mp_uplink,mp_bridge,mp_castaway,mp_paintball,mp_dig,mp_frostbite,mp_pod,mp_takeoff", ",");
