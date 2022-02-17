@@ -40,7 +40,7 @@ display(){
     level.mvui[11] = text("objective", 1, "LEFT", "CENTER", 135, 35, &"RANDOM", undefined, 2);
     level.mvui[12] = shader("line_horizontal", "CENTER", "CENTER", 0, -99, 160, 15, (0, 0, 0), 1, 2);
     level.mvui[13] = text("objective", 1.5, "CENTER", "CENTER", 0, -100, &"MAP SELECTION: ", 30, 2);
-    level.mvui[14] = text("objective", 1, "CENTER", "CENTER", 0, -80, &"[{+attack}]          ^3[{+activate}]^7          [{+speed_throw}]", undefined, 2);
+    level.mvui[14] = text("objective", 1, "CENTER", "CENTER", 0, -80, &"[{+smoke}]          ^3[{+activate}]^7          [{+frag}]", undefined, 2);
     level.mvui[15] = text("objective", 1, "RIGHT", "CENTER", -125, 35, maptostring(level.mvprev), undefined, 2);
     level.mvui[16] = text("objective", 1, "RIGHT", "CENTER", 75, 35, maptostring(level.mvnext), undefined, 2);
     level.mvui[17] = text("objective", 1, "RIGHT", "CENTER", 275, 35, maptostring(level.mvrand), undefined, 2);
@@ -52,8 +52,8 @@ display(){
 input(){
     self endon("disconnect");
     self endon("mvtimer");
-    self notifyonplayercommand("left", "+attack");
-    self notifyonplayercommand("right", "+speed_throw");
+    self notifyonplayercommand("left", "+smoke");
+    self notifyonplayercommand("right", "+frag");
     self notifyonplayercommand("select", "+usereload");
     self notifyonplayercommand("select", "+activate");
     self.mvbox[0] = shader("white", "BOTTOM", "CENTER", 0, 45, 160, 1, (1, 0.6, 0), 1, 2);
