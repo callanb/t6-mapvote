@@ -2,9 +2,6 @@
 
 main() {
     preCacheMenu("mapvote");
-    preCacheString(&"mp_raid");
-    preCacheString(&"mp_slums");
-    preCacheString(&"mp_village");
     preCacheString(&"mapvote_start");
     preCacheString(&"mapvote_state");
     preCacheString(&"mapvote_complete");
@@ -42,24 +39,16 @@ createMapvoteOptions() {
 }
 
 startMapvote() {
+    self setClientDvar("mapvote_option_0", level.mapvoteOptions[0]);
+    self setClientDvar("mapvote_option_1", level.mapvoteOptions[1]);
+    self setClientDvar("mapvote_option_2", level.mapvoteOptions[2]);
     self openMenu("mapvote");
-    self notifyMapvoteStart();
     self thread onMapvoteResponse();
 }
 
 startMapvoteAll() {
     foreach (player in level.players) {
         player startMapvote();
-    }
-}
-
-notifyMapvoteStart() {
-    self luiNotifyEvent(&"mapvote_start", 3, istring(level.mapvoteOptions[0]), istring(level.mapvoteOptions[1]), istring(level.mapvoteOptions[2]));
-}
-
-notifyMapvoteStartAll() {
-    foreach (player in level.players) {
-        player notifyMapvoteStart();
     }
 }
 

@@ -1,3 +1,7 @@
+Engine.SetDvar("mapvote_option_0", "")
+Engine.SetDvar("mapvote_option_1", "")
+Engine.SetDvar("mapvote_option_2", "")
+
 LUI.createMenu.mapvote = function (_)
     local mapvoteMenu = CoD.Menu.NewFromState("mapvote", LUI.UIElement.ContainerState)
     mapvoteMenu:setBackOutSFX("cac_cmn_backout")
@@ -19,9 +23,9 @@ LUI.createMenu.mapvote = function (_)
 	mapvoteMenu.timer:setTimeLeft(5000)
     
     mapvoteMenu.buttons = {
-        [1] = CreateMapvoteButton(mapvoteMenu, "mapvote_left_pressed", MapvoteButtonPressedHandler(0), -457),
-        [2] = CreateMapvoteButton(mapvoteMenu, "mapvote_middle_pressed", MapvoteButtonPressedHandler(1), -141),
-        [3] = CreateMapvoteButton(mapvoteMenu, "mapvote_right_pressed", MapvoteButtonPressedHandler(2), 175)
+        [1] = CreateMapvoteButton(mapvoteMenu, "mapvote_left_pressed", 0, -457),
+        [2] = CreateMapvoteButton(mapvoteMenu, "mapvote_middle_pressed", 1, -141),
+        [3] = CreateMapvoteButton(mapvoteMenu, "mapvote_right_pressed", 2, 175)
     }
 
     mapvoteMenu:addElement(mapvoteMenu.title)
@@ -30,14 +34,15 @@ LUI.createMenu.mapvote = function (_)
     mapvoteMenu:addElement(mapvoteMenu.buttons[2])
     mapvoteMenu:addElement(mapvoteMenu.buttons[3])
 
-    mapvoteMenu:registerEventHandler("mapvote_start", MapvoteStartHandler)
     mapvoteMenu:registerEventHandler("mapvote_state", MapvoteStateHandler)
     mapvoteMenu:registerEventHandler("mapvote_complete", MapvoteCompleteHandler)
 
     return mapvoteMenu
 end
 
-function CreateMapvoteButton(menu, event, handler, left)
+function CreateMapvoteButton(menu, event, index, left)
+    local map = UIExpression.DvarString(nil, "mapvote_option_" .. index)
+
     local button = LUI.UIButton.new(menu, event)
 	button:setLeftRight(false, false, left, left + 282)
     button:setTopBottom(true, false, 200, 632)
@@ -49,6 +54,7 @@ function CreateMapvoteButton(menu, event, handler, left)
     button.image = LUI.UIImage.new()
     button.image:setLeftRight(true, false, -256, 512)
 	button.image:setTopBottom(true, false, 0, 432)
+    button.image:setImage(RegisterMaterial("loadscreen_" .. map))
     button:addElement(button.image)
 
     button.nameBackground = LUI.UIImage.new()
@@ -62,21 +68,17 @@ function CreateMapvoteButton(menu, event, handler, left)
     button.name:setLeftRight(true, true, 0, 0)
 	button.name:setTopBottom(false, true, -44, 0)
     button.name:setFont(CoD.fonts.Morris)
+    button.name.map = UIExpression.ToUpper(nil, Engine.Localize(UIExpression.TableLookup(nil, UIExpression.GetCurrentMapTableName(), 0, map, 3)))
+    button.name:setText(button.name.map .. " (0)")
     button:addElement(button.name)
 
 	button.border = CoD.Border.new(2, CoD.trueOrange.r, CoD.trueOrange.g, CoD.trueOrange.b, 0)
     button.border:setAlpha(0)
 	button:addElement(button.border)
 
-    menu:registerEventHandler(event, handler)
+    menu:registerEventHandler(event, MapvoteButtonPressedHandler(index))
 
     return button
-end
-
-function PopulateMapvoteButton(button, map)
-    button.image:setImage(RegisterMaterial("loadscreen_" .. map))
-    button.name.map = UIExpression.ToUpper(nil, Engine.Localize(UIExpression.TableLookup(nil, UIExpression.GetCurrentMapTableName(), 0, map, 3)))
-    button.name:setText(button.name.map .. " (0)")
 end
 
 function MapvoteButtonOverHandler(button, _)
@@ -91,12 +93,6 @@ function MapvoteButtonPressedHandler(index)
     return function(_, _)
         Engine.SendMenuResponse(0, "mapvote", index)
     end
-end
-
-function MapvoteStartHandler(menu, clientInstance)
-    PopulateMapvoteButton(menu.buttons[1], Engine.GetIString(clientInstance.data[1], "CS_LOCALIZED_STRINGS"))
-    PopulateMapvoteButton(menu.buttons[2], Engine.GetIString(clientInstance.data[2], "CS_LOCALIZED_STRINGS"))
-    PopulateMapvoteButton(menu.buttons[3], Engine.GetIString(clientInstance.data[3], "CS_LOCALIZED_STRINGS"))
 end
 
 function MapvoteStateHandler(menu, clientInstance)
