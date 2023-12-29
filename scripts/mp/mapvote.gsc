@@ -53,7 +53,7 @@ startMapvoteAll() {
 }
 
 notifyMapvoteState() {
-    self luiNotifyEvent(&"mapvote_state", 3, level.mapvoteVotes[0], level.mapvoteVotes[1], level.mapvoteVotes[2]);
+    self luiNotifyEvent(&"mapvote_state", 3, getVotesAsPercentage(0), getVotesAsPercentage(1), getVotesAsPercentage(2));
 }
 
 notifyMapvoteStateAll() {
@@ -99,4 +99,8 @@ getMostVoted() {
     if(level.mapvoteVotes[1] > mostVoted) mostVoted = level.mapvoteVotes[1];
     if(level.mapvoteVotes[2] > mostVoted) mostVoted = level.mapvoteVotes[2];
     return mostVoted;
+}
+
+getVotesAsPercentage(index) {
+    return int(level.mapvoteVotes[index] / (level.mapvoteVotes[0] + level.mapvoteVotes[1] + level.mapvoteVotes[2]) * 100);
 }
