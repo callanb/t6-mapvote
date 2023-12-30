@@ -3,6 +3,7 @@
 
 main() {
     level.mapvoteMaps = strTok(getDvarStringDefault("mapvote_maps", "mp_la,mp_dockside,mp_carrier,mp_drone,mp_express,mp_hijacked,mp_meltdown,mp_overflow,mp_nightclub,mp_raid,mp_slums,mp_village,mp_turbine,mp_socotra,mp_nuketown_2020,mp_downhill,mp_mirage,mp_hydro,mp_skate,mp_concert,mp_magma,mp_vertigo,mp_studio,mp_uplink,mp_bridge,mp_castaway,mp_paintball,mp_dig,mp_frostbite,mp_pod,mp_takeoff"), ",");
+    level.mapvoteMode = getDvarStringDefault("mapvote_mode", "tdm");
     level.mapvoteVoteTime = getDvarIntDefault("mapvote_vote_time", 30);
     level.mapvoteEndTime = getDvarIntDefault("mapvote_end_time", 5);
     preCacheMenu("mapvote");
@@ -10,25 +11,17 @@ main() {
     preCacheString(&"mapvote_state");
     preCacheString(&"mapvote_complete");
     maps\mp\gametypes\_globallogic_utils::registerPostRoundEvent(::mapvote);
-    level thread onPlayerChat();
-}
-
-onPlayerChat() {
-    for (;;) {
-        level waittill("say", message, player, isHidden);
-        mapvote();
-    }
 }
 
 mapvote() {
-    //if (!wasLastRound()) return;
+    if (!wasLastRound()) return;
     createMapvoteOptions();
     startMapvoteAll();
     wait level.mapvoteVoteTime;
     mapIndex = getMostVoted();
     notifyMapvoteCompleteAll(mapIndex);
     wait level.mapvoteEndTime;
-    //setDvar("sv_mapRotation", "exec tdm " + level.mapvoteOptions[mapIndex]);
+    setDvar("sv_mapRotation", "exec " + level.mapvoteMode + " " + level.mapvoteOptions[mapIndex]);
 }
 
 createMapvoteOptions() {
