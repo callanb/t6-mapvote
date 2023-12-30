@@ -10,11 +10,41 @@ main() {
     preCacheString(&"mapvote_start");
     preCacheString(&"mapvote_state");
     preCacheString(&"mapvote_complete");
-    maps\mp\gametypes\_globallogic_utils::registerPostRoundEvent(::mapvote);
+    maps\mp\gametypes\_globallogic_utils::registerPostRoundEvent(::endGameHook);
+}
+
+endGameHook() {
+    if (!wasLastRound()) return;
+    level.intermission = true;
+	maps\mp\_gamerep::gameRepAnalyzeAndReport();
+	if (!isPregame()) thread maps\mp\gametypes\_globallogic::sendAfterActionReport();
+	maps\mp\gametypes\_wager::finalizeWagerGame();
+	SetMatchTalkFlag("EveryoneHearsEveryone", 1);
+	players = level.players;
+	for (index = 0; index < players.size; index++) {
+		player = players[index];
+		recordPlayerStats(player, "presentAtEnd", 1);
+		player closeMenu();
+		player closeInGameMenu();
+		player notify ("reset_outcome");
+		player thread [[level.spawnIntermission]]();
+        player setClientUIVisibilityFlag("hud_visible", 1);
+	}
+	if (isdefined(level.endgamefunction)) level thread [[level.endgamefunction]]();
+	level notify("sfade");
+	logString("game ended");
+	if (!isDefined(level.skipGameEnd) || !level.skipGameEnd) wait 5.0;
+    players = level.players;
+    for (index = 0; index < players.size; index++) {
+        player closeMenu();
+		player closeInGameMenu();
+        player.sessionstate = "spectator";
+	}
+    mapvote();
+	exitLevel(false);
 }
 
 mapvote() {
-    if (!wasLastRound()) return;
     createMapvoteOptions();
     startMapvoteAll();
     wait level.mapvoteVoteTime;
