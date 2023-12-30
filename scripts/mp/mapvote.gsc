@@ -1,6 +1,10 @@
 #include maps\mp\_utility;
+#include common_scripts\utility;
 
 main() {
+    level.mapvoteMaps = strTok(getDvarStringDefault("mapvote_maps", "mp_la,mp_dockside,mp_carrier,mp_drone,mp_express,mp_hijacked,mp_meltdown,mp_overflow,mp_nightclub,mp_raid,mp_slums,mp_village,mp_turbine,mp_socotra,mp_nuketown_2020,mp_downhill,mp_mirage,mp_hydro,mp_skate,mp_concert,mp_magma,mp_vertigo,mp_studio,mp_uplink,mp_bridge,mp_castaway,mp_paintball,mp_dig,mp_frostbite,mp_pod,mp_takeoff"), ",");
+    level.mapvoteVoteTime = getDvarIntDefault("mapvote_vote_time", 30);
+    level.mapvoteEndTime = getDvarIntDefault("mapvote_end_time", 5);
     preCacheMenu("mapvote");
     preCacheString(&"mapvote_start");
     preCacheString(&"mapvote_state");
@@ -20,28 +24,32 @@ mapvote() {
     //if (!wasLastRound()) return;
     createMapvoteOptions();
     startMapvoteAll();
-    wait 5;
+    wait level.mapvoteVoteTime;
     mapIndex = getMostVoted();
     notifyMapvoteCompleteAll(mapIndex);
+    wait level.mapvoteEndTime;
     //setDvar("sv_mapRotation", "exec tdm " + level.mapvoteOptions[mapIndex]);
 }
 
 createMapvoteOptions() {
+    maps = array_randomize(level.mapvoteMaps);
     level.mapvotePlayerVote = [];
     level.mapvoteOptions = [];
     level.mapvoteVotes = [];
-    level.mapvoteOptions[0] = "mp_raid";
-    level.mapvoteOptions[1] = "mp_slums";
-    level.mapvoteOptions[2] = "mp_village";
+    level.mapvoteOptions[0] = maps[0];
+    level.mapvoteOptions[1] = maps[1];
+    level.mapvoteOptions[2] = maps[2];
     level.mapvoteVotes[0] = 0;
     level.mapvoteVotes[1] = 0;
     level.mapvoteVotes[2] = 0;
 }
 
 startMapvote() {
-    self setClientDvar("mapvote_option_0", level.mapvoteOptions[0]);
-    self setClientDvar("mapvote_option_1", level.mapvoteOptions[1]);
-    self setClientDvar("mapvote_option_2", level.mapvoteOptions[2]);
+    self setClientDvar("mapvote_client_vote_time", level.mapvoteVoteTime * 1000);
+    self setClientDvar("mapvote_client_end_time", level.mapvoteEndTime * 1000);
+    self setClientDvar("mapvote_client_option_0", level.mapvoteOptions[0]);
+    self setClientDvar("mapvote_client_option_1", level.mapvoteOptions[1]);
+    self setClientDvar("mapvote_client_option_2", level.mapvoteOptions[2]);
     self openMenu("mapvote");
     self thread onMapvoteResponse();
 }
@@ -95,12 +103,17 @@ onMapvoteResponse() {
 }
 
 getMostVoted() {
-    mostVoted = level.mapvoteVotes[0];
-    if(level.mapvoteVotes[1] > mostVoted) mostVoted = level.mapvoteVotes[1];
-    if(level.mapvoteVotes[2] > mostVoted) mostVoted = level.mapvoteVotes[2];
+    mostVoted = 0;
+    if(level.mapvoteVotes[1] > mostVoted) mostVoted = 1;
+    if(level.mapvoteVotes[2] > mostVoted) mostVoted = 2;
     return mostVoted;
 }
 
 getVotesAsPercentage(index) {
     return int(level.mapvoteVotes[index] / (level.mapvoteVotes[0] + level.mapvoteVotes[1] + level.mapvoteVotes[2]) * 100);
+}
+
+getDvarStringDefault(dvarName, defaultValue) {
+    value = getDvar(dvarName);
+    return value == "" ? defaultValue : value;
 }
