@@ -1,6 +1,6 @@
 # Proof of concept T6 LUI mapvote. 
 ## Note
-- Controller / arrow key navigation has not yet been added.
+- Controller / arrow key navigation has not yet been added (The main game mapvoter lua file can be used as a reference to get this working).
 - Client overflow could be an issue with the frequency LUI notify events are sent, could change it to update each client every second, rather than on every vote.
 - The way the mapvote is attached to the main endGame function hasn't really been tested for hiccups. Setting the client state to not "intermission" seems to be
 required for the menu buttons to work, haven't explored why. The idea here is to have it appear after the intermission rather than tacking it on as a post round event.
